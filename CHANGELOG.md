@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 ### Changed
+- tplink: enter enable mode on login, prompting for the enable/login password only if the device asks. Adds support for the TP-Link DeltaStream GPON OLT (DS-P7001-08), whose privileged commands require enable but no password (@Vantomas)
 
 ### Fixed
 

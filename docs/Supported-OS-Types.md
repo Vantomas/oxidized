@@ -179,7 +179,8 @@
 |Telco Systems       |Telco Systems T-Marc 3306     |[telco](/lib/oxidized/model/telco.rb)
 |Trango Systems      |Trango                        |[trango](/lib/oxidized/model/trango.rb)
 |TrueNAS             |TrueNAS                       |[truenas](/lib/oxidized/model/truenas.rb)
-|TPLink              |TPLink                        |[tplink](/lib/oxidized/model/tplink.rb)
+|TPLink              |TPLink                        |[tplink](/lib/oxidized/model/tplink.rb)          |                 |[TPLink](Model-Notes/TPLink.md)|
+|                    |DeltaStream GPON OLT          |[tplink](/lib/oxidized/model/tplink.rb)          |@Vantomas        |[TPLink](Model-Notes/TPLink.md)|
 |                    |TL-SL5428                     |[edgecos](/lib/oxidized/model/edgecos.rb)
 |                    |TL-SL3428                     |[powerconnect](/lib/oxidized/model/powerconnect.rb)
 |Ubiquiti            |AirOS                         |[airos](/lib/oxidized/model/airos.rb)
