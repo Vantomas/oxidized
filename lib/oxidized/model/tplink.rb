@@ -1,6 +1,10 @@
 class TPLink < Oxidized::Model
   using Refinements
 
+  # Tested with TP-Link JetStream switches and the TP-Link DeltaStream
+  # DS-P7001-08 GPON OLT (SW 1.0.0). The OLT enables with no password and
+  # serves config from privileged mode; see the enable handling in post_login.
+
   # tp-link prompt
   prompt /^\r?([\w.@()-]+[#>]\s?)$/
   comment '! '
@@ -48,8 +52,6 @@ class TPLink < Oxidized::Model
     lines[0..lines.index("end\n")].join
   end
 
-  macro :enable, regex: /^[pP]assword:/
-
   cfg :telnet, :ssh do
     username /^User ?[nN]ame:/
     password /^\r?Password:/
@@ -58,12 +60,28 @@ class TPLink < Oxidized::Model
 
   cfg :telnet, :ssh do
     post_login do
+      # Enter privileged (enable) mode if the device offers it. The prompt is
+      # ">" in user mode and "#" once enabled, and the commands below
+      # (terminal length 0, show system-info, show running-config) need "#" on
+      # devices that distinguish the two modes (e.g. the DeltaStream GPON OLT,
+      # which enables with no password and jumps straight to "#").
+      #
+      # Using cmd (not send) resets the read buffer, so we wait for the device's
+      # real response instead of matching the stale user-mode prompt, and accept
+      # three outcomes: a password challenge, the enabled "#" prompt, or a
+      # returned ">". The last case (device without an enable command, or one
+      # declining it) is left untouched so setups that never needed enable keep
+      # working as before. A password, if asked for, comes from vars(:enable),
+      # falling back to the login password.
+      out = cmd "enable", Regexp.union(/^\r?[pP]assword:/, @node.prompt)
+      cmd((vars(:enable) || @node.auth[:password]).to_s) if out =~ /[pP]assword:/
+
       cmd 'terminal length 0'
     end
 
     pre_logout do
-      send "exit\r"
-      send "logout\r"
+      send "exit\r\n"
+      send "logout\r\n"
     end
   end
 end
